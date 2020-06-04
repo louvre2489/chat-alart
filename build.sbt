@@ -24,7 +24,9 @@ lazy val chatalartServer = (project in file("chatalart-server"))
        Akka.slf4j,
        Akka.actor,
        Akka.http,
+       Akka.stream,
        Circe.generic,
+       AkkaHttpCirce.akkahttpCirce,
        ScalaTest.scalaTest % "test"
      )
   )
@@ -50,6 +52,14 @@ lazy val chatalartWorker = (project in file("chatalart-worker"))
 
 lazy val commonSettings = Seq (
   scalaVersion := "2.13.2",
+  scalacOptions ++= Seq(
+    "-feature",
+    "-deprecation",
+    "-unchecked",
+    "-encoding",
+    "UTF-8",
+    "-language:_"
+  )
 )
 
 lazy val scalafixCommonSettings = Seq(

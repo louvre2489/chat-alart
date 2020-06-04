@@ -11,6 +11,7 @@ object Dependencies {
     val akkaVersion     = "2.6.5"
     val akkaHttpVersion = "10.1.12"
     val actor           = "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
+    val stream          = "com.typesafe.akka" %% "akka-stream" % akkaVersion
     val http            = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
     val slf4j           = "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
     val testkit         = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
@@ -22,6 +23,11 @@ object Dependencies {
     val core: ModuleID    = "io.circe" %% "circe-core" % version
     val parser: ModuleID  = "io.circe" %% "circe-parser" % version
     val generic: ModuleID = "io.circe" %% "circe-generic" % version
+  }
+
+  object AkkaHttpCirce {
+    val version                 = "1.29.1"
+    val akkahttpCirce: ModuleID = "de.heikoseeberger" %% "akka-http-circe" % version
   }
 
   object ScalaTest {
