@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  chatalart-server:
+    image: chatalart-server
+    container_name: chatalart-server
+    hostname: chatalart-server
+    depends_on:
+      - chatalart-worker
+    ports:
+      - "10010:10010"
+
+  chatalart-worker:
+    image: chatalart-worker
+    container_name: chatalart-worker
+    hostname: chatalart-worker
+    ports:
+      - "20010:20010"

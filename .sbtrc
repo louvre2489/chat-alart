@@ -1,0 +1,4 @@
+alias execScalafix=;scalafix;Test/scalafix
+alias checkScalafix=;scalafix --check;Test/scalafix --check
+alias strictCompile=;set Compile/compile/scalacOptions += "-Xfatal-warnings";compile
+alias strictRecompile=;set Compile/compile/scalacOptions += "-Xfatal-warnings";~compile
