@@ -30,6 +30,11 @@ object Dependencies {
     val akkahttpCirce: ModuleID = "de.heikoseeberger" %% "akka-http-circe" % version
   }
 
+  object Kafka {
+    val version = "2.5.0"
+    val kafkaStream: ModuleID = "org.apache.kafka" %% "kafka-streams-scala" % version
+  }
+
   object ScalaTest {
     val version             = "3.1.2"
     val scalaTest: ModuleID = "org.scalatest" %% "scalatest" % version

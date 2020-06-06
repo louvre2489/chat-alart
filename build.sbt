@@ -44,6 +44,7 @@ lazy val chatalartWorker = (project in file("chatalart-worker"))
   .settings(
      libraryDependencies ++= Seq(
        Logback.classic,
+       Kafka.kafkaStream,
        ScalaTest.scalaTest % "test"
      )
   )
