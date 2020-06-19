@@ -1,0 +1,21 @@
+/* 共通 */
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+img.icon_size {
+  height: 3em;
+  width: 3em;
+}
+
+img.icon_position {
+  vertical-align: middle;
+}
+
+.toggle_width {
+  width: 3.5em !important;
+}

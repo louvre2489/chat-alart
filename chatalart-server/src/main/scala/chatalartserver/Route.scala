@@ -4,6 +4,10 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server._
 import Directives._
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.headers.{
+  `Access-Control-Allow-Headers`,
+  `Access-Control-Allow-Origin`,
+}
 import chatalartserver.targets.TargetsUsecase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
@@ -32,19 +36,56 @@ trait MyExceptionHandler {
 object Route {
 
   def routes()(implicit system: ActorSystem, ec: ExecutionContext): Route = {
-    path("targets") {
-      val res = TargetsUsecase.getTargets()
-      onSuccess(res) {
-        case json => complete(json)
-        case _ => throw new RuntimeException
+    extractUri { uri =>
+      println("uri:" + uri)
+      addAccessControlHeaders {
+        path("public" / "html" / Remaining) { resource =>
+          pathEndOrSingleSlash {
+            get {
+              getFromResource("frontend/public/html/" + resource)
+            }
+          }
+        } ~
+         path("public" / Remaining) { resource =>
+          pathEndOrSingleSlash {
+            get {
+              getFromResource("frontend/public/" + resource)
+            }
+          }
+        } ~
+        path("targets") {
+          val res = TargetsUsecase.getTargets()
+          onSuccess(res) {
+            case json =>
+              println("成功：" + json)
+              complete(json)
+            case _ => throw new RuntimeException
+          }
+        } ~
+        path("alarm") {
+          post {
+            val response = AlartResponse("OK")
+            complete(response)
+          }
+        } ~
+        path("list") {
+          complete("OK")
+        } ~
+        path("alarton") {
+          throw new Exception
+        }
       }
-    } ~
-    path("list") {
-      complete("OK")
-    } ~
-    path("alarton") {
-      throw new Exception
     }
-
   }
+
+  case class AlartResponse(result: String)
+
+  private def addAccessControlHeaders: Directive0 = {
+    respondWithHeaders(corsResponseHeaders)
+  }
+
+  private val corsResponseHeaders = List(
+    `Access-Control-Allow-Origin`.*,
+    `Access-Control-Allow-Headers`("Authorization", "Content-Type", "X-Requested-With")
+  )
 }
