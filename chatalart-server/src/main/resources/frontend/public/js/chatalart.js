@@ -5937,10 +5937,10 @@ var author$project$Main$Data = function (a) {
 	return {$: 'Data', a: a};
 };
 var author$project$Main$Failure = {$: 'Failure'};
-var author$project$Main$AlarmChat = function (a) {
-	return {$: 'AlarmChat', a: a};
+var author$project$Main$AlartChat = function (a) {
+	return {$: 'AlartChat', a: a};
 };
-var author$project$Main$alarmDecoder = A2(elm$json$Json$Decode$field, 'result', elm$json$Json$Decode$string);
+var author$project$Main$alartDecoder = A2(elm$json$Json$Decode$field, 'result', elm$json$Json$Decode$string);
 var elm$http$Http$jsonBody = function (value) {
 	return A2(
 		_Http_pair,
@@ -5962,7 +5962,7 @@ var elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
-var author$project$Main$alarmChat = F2(
+var author$project$Main$alartChat = F2(
 	function (room_id, isChecked) {
 		return elm$http$Http$request(
 			{
@@ -5977,16 +5977,15 @@ var author$project$Main$alarmChat = F2(
 								'isChecked',
 								elm$json$Json$Encode$bool(isChecked))
 							]))),
-				expect: A2(elm$http$Http$expectJson, author$project$Main$AlarmChat, author$project$Main$alarmDecoder),
+				expect: A2(elm$http$Http$expectJson, author$project$Main$AlartChat, author$project$Main$alartDecoder),
 				headers: _List_fromArray(
 					[
-						A2(elm$http$Http$header, 'Accept', 'application/json'),
-						A2(elm$http$Http$header, 'Content-Type', 'application/json')
+						A2(elm$http$Http$header, 'Accept', 'application/json')
 					]),
 				method: 'POST',
 				timeout: elm$core$Maybe$Just(10000),
 				tracker: elm$core$Maybe$Nothing,
-				url: '/alarm'
+				url: '/alartswitch'
 			});
 	});
 var elm$core$Basics$not = _Basics_not;
@@ -6015,7 +6014,7 @@ var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 'MorePlease':
+			case 'OneMorePlease':
 				return _Utils_Tuple2(author$project$Main$Loading, author$project$Main$getRooms);
 			case 'GetRooms':
 				var result = msg.a;
@@ -6047,7 +6046,7 @@ var author$project$Main$update = F2(
 						rooms);
 					return _Utils_Tuple2(
 						author$project$Main$Data(newRooms),
-						A2(author$project$Main$alarmChat, newRoom.room_id, !newRoom.isChecked));
+						A2(author$project$Main$alartChat, newRoom.room_id, !newRoom.isChecked));
 				} else {
 					return _Utils_Tuple2(author$project$Main$Loading, author$project$Main$getRooms);
 				}
@@ -6064,7 +6063,7 @@ var author$project$Main$update = F2(
 				}
 		}
 	});
-var author$project$Main$MorePlease = {$: 'MorePlease'};
+var author$project$Main$OneMorePlease = {$: 'OneMorePlease'};
 var author$project$Main$Checked = function (a) {
 	return {$: 'Checked', a: a};
 };
@@ -6252,7 +6251,7 @@ var author$project$Main$viewRooms = function (model) {
 						elm$html$Html$button,
 						_List_fromArray(
 							[
-								elm$html$Html$Events$onClick(author$project$Main$MorePlease)
+								elm$html$Html$Events$onClick(author$project$Main$OneMorePlease)
 							]),
 						_List_fromArray(
 							[
@@ -6284,7 +6283,7 @@ var author$project$Main$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('Random Cats')
+						elm$html$Html$text('ピン止めしたルームの一覧')
 					])),
 				author$project$Main$viewRooms(model)
 			]));

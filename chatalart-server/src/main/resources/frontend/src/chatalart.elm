@@ -52,7 +52,7 @@ init _ =
 
 
 type Msg
-    = MorePlease
+    = OneMorePlease
     | GetRooms (Result Http.Error (List Room))
     | Checked Room
     | AlartChat (Result Http.Error String)
@@ -61,7 +61,7 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MorePlease ->
+        OneMorePlease ->
             ( Loading, getRooms )
 
         GetRooms result ->
@@ -81,7 +81,7 @@ update msg model =
                             rooms
                                 |> List.map (\room -> { room | isChecked = reverseCheck room.room_id newRoom.room_id room.isChecked })
                     in
-                    ( Data newRooms, alarmChat newRoom.room_id (not newRoom.isChecked) )
+                    ( Data newRooms, alartChat newRoom.room_id (not newRoom.isChecked) )
 
                 _ ->
                     ( Loading, getRooms )
@@ -121,7 +121,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h2 [] [ text "Random Cats" ]
+        [ h2 [] [ text "ピン止めしたルームの一覧" ]
         , viewRooms model
         ]
 
@@ -132,7 +132,7 @@ viewRooms model =
         Failure ->
             div []
                 [ text "失敗"
-                , button [ onClick MorePlease ] [ text "Try Again!" ]
+                , button [ onClick OneMorePlease ] [ text "Try Again!" ]
                 ]
 
         Loading ->
@@ -203,15 +203,14 @@ getRooms =
         }
 
 
-alarmChat : Int -> Bool -> Cmd Msg
-alarmChat room_id isChecked =
+alartChat : Int -> Bool -> Cmd Msg
+alartChat room_id isChecked =
     Http.request
         { method = "POST"
         , headers =
             [ Http.header "Accept" "application/json"
-            , Http.header "Content-Type" "application/json"
             ]
-        , url = "/alarm"
+        , url = "/alartswitch"
         , expect = Http.expectJson AlartChat alartDecoder
         , body = Http.jsonBody <| Json.Encode.object [ ( "room_id", Json.Encode.int room_id ), ( "isChecked", Json.Encode.bool isChecked ) ]
         , timeout = Just 10000

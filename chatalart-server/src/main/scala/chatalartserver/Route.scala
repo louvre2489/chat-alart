@@ -4,15 +4,13 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server._
 import Directives._
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.headers.{
-  `Access-Control-Allow-Headers`,
-  `Access-Control-Allow-Origin`,
-}
+import akka.http.scaladsl.model.headers.{ `Access-Control-Allow-Headers`, `Access-Control-Allow-Origin` }
+import chatalartserver.model.AlartTargetRoom
 import chatalartserver.targets.TargetsUsecase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContext, Future }
 
 case class ErrorResponse(code: Int, message: String)
 
@@ -46,7 +44,7 @@ object Route {
             }
           }
         } ~
-         path("public" / Remaining) { resource =>
+        path("public" / Remaining) { resource =>
           pathEndOrSingleSlash {
             get {
               getFromResource("frontend/public/" + resource)
@@ -62,10 +60,20 @@ object Route {
             case _ => throw new RuntimeException
           }
         } ~
-        path("alarm") {
+        path("alartswitch") {
           post {
-            val response = AlartResponse("OK")
-            complete(response)
+            extractRequestEntity { r =>
+              entity(as[AlartTargetRoom]) { json: AlartTargetRoom =>
+                println(json)
+                val resultFuture: Future[String] = ???
+                onSuccess(resultFuture) {
+                  case s: String =>
+                    val response = AlartResponse("OK")
+                    complete(json)
+                  case _ => throw new Exception()
+                }
+              }
+            }
           }
         } ~
         path("list") {
