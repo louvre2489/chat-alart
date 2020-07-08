@@ -6,11 +6,12 @@ import Directives._
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.headers.{ `Access-Control-Allow-Headers`, `Access-Control-Allow-Origin` }
 import chatalartserver.model.AlartTargetRoom
-import chatalartserver.targets.TargetsUsecase
+import chatalartserver.usecase.alartonoff.{ AlartOffUsecase, AlartOnUsecase }
+import chatalartserver.usecase.targets.TargetsUsecase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 case class ErrorResponse(code: Int, message: String)
 
@@ -35,8 +36,10 @@ object Route {
 
   def routes()(implicit system: ActorSystem, ec: ExecutionContext): Route = {
     extractUri { uri =>
-      println("uri:" + uri)
-      addAccessControlHeaders {
+
+      println(s"uri: $uri")
+
+      respondWithHeaders(corsResponseHeaders) {
         path("public" / "html" / Remaining) { resource =>
           pathEndOrSingleSlash {
             get {
@@ -62,35 +65,23 @@ object Route {
         } ~
         path("alartswitch") {
           post {
-            extractRequestEntity { r =>
-              entity(as[AlartTargetRoom]) { json: AlartTargetRoom =>
-                println(json)
-                val resultFuture: Future[String] = ???
-                onSuccess(resultFuture) {
-                  case s: String =>
-                    val response = AlartResponse("OK")
-                    complete(json)
-                  case _ => throw new Exception()
-                }
+            entity(as[AlartTargetRoom]) { json: AlartTargetRoom =>
+            println(json)
+              if (json.isChecked) {
+                AlartOnUsecase.alartOn(json.roomId)
+                complete(AlartSwitchResponse("Alart On"))
+              } else {
+                AlartOffUsecase.alartOff(json.roomId)
+                complete(AlartSwitchResponse("Alart Off"))
               }
             }
           }
-        } ~
-        path("list") {
-          complete("OK")
-        } ~
-        path("alarton") {
-          throw new Exception
         }
       }
     }
   }
 
-  case class AlartResponse(result: String)
-
-  private def addAccessControlHeaders: Directive0 = {
-    respondWithHeaders(corsResponseHeaders)
-  }
+  case class AlartSwitchResponse(result: String)
 
   private val corsResponseHeaders = List(
     `Access-Control-Allow-Origin`.*,

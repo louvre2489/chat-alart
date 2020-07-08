@@ -27,11 +27,11 @@ main =
 
 
 type alias Room =
-    { room_id : Int
+    { roomId : Int
     , name : String
     , sticky : Bool
-    , icon_path : String
-    , last_update_time : Int
+    , iconPath : String
+    , lastUpdateTime : Int
     , isChecked : Bool
     }
 
@@ -79,9 +79,9 @@ update msg model =
                     let
                         newRooms =
                             rooms
-                                |> List.map (\room -> { room | isChecked = reverseCheck room.room_id newRoom.room_id room.isChecked })
+                                |> List.map (\room -> { room | isChecked = reverseCheck room.roomId newRoom.roomId room.isChecked })
                     in
-                    ( Data newRooms, alartChat newRoom.room_id (not newRoom.isChecked) )
+                    ( Data newRooms, alartChat newRoom.roomId (not newRoom.isChecked) )
 
                 _ ->
                     ( Loading, getRooms )
@@ -161,7 +161,7 @@ renderList lst =
                                     ]
                                 ]
                             , div [ class "column" ]
-                                [ img [ class "icon_size icon_position", src room.icon_path ] []
+                                [ img [ class "icon_size icon_position", src room.iconPath ] []
                                 , text room.name
                                 ]
                             ]
@@ -204,7 +204,7 @@ getRooms =
 
 
 alartChat : Int -> Bool -> Cmd Msg
-alartChat room_id isChecked =
+alartChat roomId isChecked =
     Http.request
         { method = "POST"
         , headers =
@@ -212,7 +212,7 @@ alartChat room_id isChecked =
             ]
         , url = "/alartswitch"
         , expect = Http.expectJson AlartChat alartDecoder
-        , body = Http.jsonBody <| Json.Encode.object [ ( "room_id", Json.Encode.int room_id ), ( "isChecked", Json.Encode.bool isChecked ) ]
+        , body = Http.jsonBody <| Json.Encode.object [ ( "roomId", Json.Encode.int roomId ), ( "isChecked", Json.Encode.bool isChecked ) ]
         , timeout = Just 10000
         , tracker = Nothing
         }
@@ -225,11 +225,11 @@ alartChat room_id isChecked =
 roomDecoder : Decoder Room
 roomDecoder =
     Json.Decode.map6 Room
-        (Json.Decode.field "room_id" Json.Decode.int)
+        (Json.Decode.field "roomId" Json.Decode.int)
         (Json.Decode.field "name" Json.Decode.string)
         (Json.Decode.field "sticky" Json.Decode.bool)
-        (Json.Decode.field "icon_path" Json.Decode.string)
-        (Json.Decode.field "last_update_time" Json.Decode.int)
+        (Json.Decode.field "iconPath" Json.Decode.string)
+        (Json.Decode.field "lastUpdateTime" Json.Decode.int)
         (Json.Decode.field "isChecked" Json.Decode.bool)
 
 

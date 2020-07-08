@@ -1,13 +1,13 @@
-package chatalartserver.targets
+package chatalartserver.usecase.targets
 
-import chatalartserver.Utils
-import chatalartserver.http.ApiTokenHeader
-import chatalartserver.model.RoomEncDec._
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import chatalartserver.http.ApiTokenHeader
 import chatalartserver.model.Room
+import chatalartserver.model.RoomDecoder._
+import chatalartserver.Utils
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -27,7 +27,7 @@ object TargetsUsecase {
       val json                 = Await.result(body, Duration.Inf)
 
       val rooms = decodeRooms(json).getOrElse(List())
-      rooms.filter(r => r.sticky).sortBy(r => r.last_update_time *0)
+      rooms.filter(r => r.sticky).sortBy(r => r.lastUpdateTime * -1)
     }
   }
 }

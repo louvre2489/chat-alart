@@ -8,7 +8,7 @@ object Dependencies {
   }
 
   object Akka {
-    val akkaVersion     = "2.6.5"
+    val akkaVersion     = "2.6.6"
     val akkaHttpVersion = "10.1.12"
     val actor           = "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
     val stream          = "com.typesafe.akka" %% "akka-stream" % akkaVersion

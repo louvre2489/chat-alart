@@ -1,5 +1,4 @@
 package chatalartserver.model
 
-case class AlartTargetRoom(room_id: Long, isChecked: Boolean) {
+final case class AlartTargetRoom(roomId: Long, isChecked: Boolean)
 
-}

@@ -4535,8 +4535,8 @@ var author$project$Main$GetRooms = function (a) {
 	return {$: 'GetRooms', a: a};
 };
 var author$project$Main$Room = F6(
-	function (room_id, name, sticky, icon_path, last_update_time, isChecked) {
-		return {icon_path: icon_path, isChecked: isChecked, last_update_time: last_update_time, name: name, room_id: room_id, sticky: sticky};
+	function (roomId, name, sticky, iconPath, lastUpdateTime, isChecked) {
+		return {iconPath: iconPath, isChecked: isChecked, lastUpdateTime: lastUpdateTime, name: name, roomId: roomId, sticky: sticky};
 	});
 var elm$core$Array$branchFactor = 32;
 var elm$core$Array$Array_elm_builtin = F4(
@@ -5021,11 +5021,11 @@ var elm$json$Json$Decode$string = _Json_decodeString;
 var author$project$Main$roomDecoder = A7(
 	elm$json$Json$Decode$map6,
 	author$project$Main$Room,
-	A2(elm$json$Json$Decode$field, 'room_id', elm$json$Json$Decode$int),
+	A2(elm$json$Json$Decode$field, 'roomId', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'sticky', elm$json$Json$Decode$bool),
-	A2(elm$json$Json$Decode$field, 'icon_path', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'last_update_time', elm$json$Json$Decode$int),
+	A2(elm$json$Json$Decode$field, 'iconPath', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'lastUpdateTime', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'isChecked', elm$json$Json$Decode$bool));
 var elm$json$Json$Decode$list = _Json_decodeList;
 var author$project$Main$roomsDecoder = elm$json$Json$Decode$list(author$project$Main$roomDecoder);
@@ -5963,7 +5963,7 @@ var elm$json$Json$Encode$object = function (pairs) {
 			pairs));
 };
 var author$project$Main$alartChat = F2(
-	function (room_id, isChecked) {
+	function (roomId, isChecked) {
 		return elm$http$Http$request(
 			{
 				body: elm$http$Http$jsonBody(
@@ -5971,8 +5971,8 @@ var author$project$Main$alartChat = F2(
 						_List_fromArray(
 							[
 								_Utils_Tuple2(
-								'room_id',
-								elm$json$Json$Encode$int(room_id)),
+								'roomId',
+								elm$json$Json$Encode$int(roomId)),
 								_Utils_Tuple2(
 								'isChecked',
 								elm$json$Json$Encode$bool(isChecked))
@@ -6040,13 +6040,13 @@ var author$project$Main$update = F2(
 							return _Utils_update(
 								room,
 								{
-									isChecked: A3(author$project$Main$reverseCheck, room.room_id, newRoom.room_id, room.isChecked)
+									isChecked: A3(author$project$Main$reverseCheck, room.roomId, newRoom.roomId, room.isChecked)
 								});
 						},
 						rooms);
 					return _Utils_Tuple2(
 						author$project$Main$Data(newRooms),
-						A2(author$project$Main$alartChat, newRoom.room_id, !newRoom.isChecked));
+						A2(author$project$Main$alartChat, newRoom.roomId, !newRoom.isChecked));
 				} else {
 					return _Utils_Tuple2(author$project$Main$Loading, author$project$Main$getRooms);
 				}
@@ -6226,7 +6226,7 @@ var author$project$Main$renderList = function (lst) {
 													_List_fromArray(
 														[
 															elm$html$Html$Attributes$class('icon_size icon_position'),
-															elm$html$Html$Attributes$src(room.icon_path)
+															elm$html$Html$Attributes$src(room.iconPath)
 														]),
 													_List_Nil),
 													elm$html$Html$text(room.name)
