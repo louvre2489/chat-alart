@@ -81,7 +81,7 @@ update msg model =
                             rooms
                                 |> List.map (\room -> { room | isChecked = reverseCheck room.roomId newRoom.roomId room.isChecked })
                     in
-                    ( Data newRooms, alartChat newRoom.roomId (not newRoom.isChecked) )
+                    ( Data newRooms, alartChat newRoom.roomId newRoom.name (not newRoom.isChecked) )
 
                 _ ->
                     ( Loading, getRooms )
@@ -203,8 +203,8 @@ getRooms =
         }
 
 
-alartChat : Int -> Bool -> Cmd Msg
-alartChat roomId isChecked =
+alartChat : Int -> String -> Bool -> Cmd Msg
+alartChat roomId chatName isChecked =
     Http.request
         { method = "POST"
         , headers =
@@ -212,7 +212,7 @@ alartChat roomId isChecked =
             ]
         , url = "/alartswitch"
         , expect = Http.expectJson AlartChat alartDecoder
-        , body = Http.jsonBody <| Json.Encode.object [ ( "roomId", Json.Encode.int roomId ), ( "isChecked", Json.Encode.bool isChecked ) ]
+        , body = Http.jsonBody <| Json.Encode.object [ ( "roomId", Json.Encode.int roomId ), ( "chatName", Json.Encode.string chatName ), ( "isChecked", Json.Encode.bool isChecked ) ]
         , timeout = Just 10000
         , tracker = Nothing
         }

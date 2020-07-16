@@ -68,7 +68,7 @@ object Route {
             entity(as[AlartTargetRoom]) { json: AlartTargetRoom =>
             println(json)
               if (json.isChecked) {
-                AlartOnUsecase.alartOn(json.roomId)
+                AlartOnUsecase.alartOn(json)
                 complete(AlartSwitchResponse("Alart On"))
               } else {
                 AlartOffUsecase.alartOff(json.roomId)

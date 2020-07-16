@@ -25,6 +25,7 @@ lazy val chatalartServer = (project in file("chatalart-server"))
        Akka.actor,
        Akka.http,
        Akka.stream,
+       Akka.kafka,
        Circe.generic,
        AkkaHttpCirce.akkahttpCirce,
        ScalaTest.scalaTest % "test"
@@ -44,7 +45,9 @@ lazy val chatalartWorker = (project in file("chatalart-worker"))
   .settings(
      libraryDependencies ++= Seq(
        Logback.classic,
-       Kafka.kafkaStream,
+       Akka.actor,
+       Akka.stream,
+       Akka.kafka,
        ScalaTest.scalaTest % "test"
      )
   )

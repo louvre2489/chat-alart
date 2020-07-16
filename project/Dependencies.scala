@@ -8,14 +8,16 @@ object Dependencies {
   }
 
   object Akka {
-    val akkaVersion     = "2.6.6"
-    val akkaHttpVersion = "10.1.12"
-    val actor           = "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
-    val stream          = "com.typesafe.akka" %% "akka-stream" % akkaVersion
-    val http            = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
-    val slf4j           = "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
-    val testkit         = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
-    val httpTestkit     = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion
+    val akkaVersion       = "2.6.6"
+    val akkaHttpVersion   = "10.1.12"
+    val akkaKafkaVersioin = "2.0.3"
+    val actor             = "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
+    val stream            = "com.typesafe.akka" %% "akka-stream" % akkaVersion
+    val http              = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
+    val kafka             = "com.typesafe.akka" %% "akka-stream-kafka" % akkaKafkaVersioin
+    val slf4j             = "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
+    val testkit           = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+    val httpTestkit       = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion
   }
 
   object Circe {
@@ -28,11 +30,6 @@ object Dependencies {
   object AkkaHttpCirce {
     val version                 = "1.29.1"
     val akkahttpCirce: ModuleID = "de.heikoseeberger" %% "akka-http-circe" % version
-  }
-
-  object Kafka {
-    val version = "2.5.0"
-    val kafkaStream: ModuleID = "org.apache.kafka" %% "kafka-streams-scala" % version
   }
 
   object ScalaTest {

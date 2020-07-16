@@ -3,35 +3,37 @@ package chatalartserver.usecase.alartonoff
 import java.util.concurrent.Executors
 
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorSystem, Behavior }
+import akka.actor.typed.{ActorSystem, Behavior}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import chatalartserver.Utils
 import chatalartserver.http.ApiTokenHeader
+import chatalartserver.model.AlartTargetRoom
 import chatalartserver.model.MessageDecoder._
+import chatalartserver.store.MessageStore
 import chatalartserver.usecase.alartonoff.AlartActor.WatchRoomId
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 object AlartOnUsecase {
-  def alartOn(roomId: Long): Unit = {
+  def alartOn(target: AlartTargetRoom): Unit = {
 
     // Actor内でThread.sleepしてチェックのペースを制御するため、ONにするごとに専用のスレッドを作成する
     implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(1))
 
-    val system = ActorSystem(AlartActor(roomId), s"alart-${roomId.toString}")
-    system ! WatchRoomId(roomId)
+    val system = ActorSystem(AlartActor(target), s"alart-${target.roomId.toString}")
+    system ! WatchRoomId(target)
   }
 }
 
 object AlartActor {
 
-  final case class WatchRoomId(roomId: Long)
+  final case class WatchRoomId(req: AlartTargetRoom)
 
-  def apply(roomId: Long)(implicit ec: ExecutionContext): Behavior[WatchRoomId] = {
-    println(s"Watch Room: ${roomId.toString}")
+  def apply(target: AlartTargetRoom)(implicit ec: ExecutionContext): Behavior[WatchRoomId] = {
+    println(s"Watch Room: ${target.roomId.toString}")
 
     Behaviors.receive { (context, message) =>
       // API経由で最新メッセージを取得する(force=0)
@@ -40,10 +42,10 @@ object AlartActor {
 
       val req = HttpRequest(
         method = HttpMethods.GET,
-        uri = Utils.chatDomain + "rooms/" + roomId.toString + "/messages?force=0",
+        uri = Utils.chatDomain + "rooms/" + target.roomId.toString + "/messages?force=0",
       ).addHeader(ApiTokenHeader(Utils.token))
 
-      Http()
+      val messageList = Http()
         .singleRequest(req)
         .map { v =>
           v.status match {
@@ -60,7 +62,7 @@ object AlartActor {
               println(result)
               result
             case StatusCodes.NoContent =>
-              println(s"ルーム${roomId.toString}の新規メッセージなし")
+              println(s"ルーム${target.chatName}の新規メッセージなし")
               List()
             case _ =>
               println(s"想定外のレスポンス - レスポンスコード：${v.status} - エンティティ：${v.entity}")
@@ -70,6 +72,10 @@ object AlartActor {
           println(e)
           throw e
         }
+
+      for {
+        l <- messageList
+      } yield l.foreach(msg => MessageStore.store(target.chatName, msg))
 
       // 10秒待って再度自分自身を呼び出す
       Thread.sleep(10000)

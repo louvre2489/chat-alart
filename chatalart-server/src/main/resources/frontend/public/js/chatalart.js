@@ -5962,8 +5962,9 @@ var elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
-var author$project$Main$alartChat = F2(
-	function (roomId, isChecked) {
+var elm$json$Json$Encode$string = _Json_wrap;
+var author$project$Main$alartChat = F3(
+	function (roomId, chatName, isChecked) {
 		return elm$http$Http$request(
 			{
 				body: elm$http$Http$jsonBody(
@@ -5973,6 +5974,9 @@ var author$project$Main$alartChat = F2(
 								_Utils_Tuple2(
 								'roomId',
 								elm$json$Json$Encode$int(roomId)),
+								_Utils_Tuple2(
+								'chatName',
+								elm$json$Json$Encode$string(chatName)),
 								_Utils_Tuple2(
 								'isChecked',
 								elm$json$Json$Encode$bool(isChecked))
@@ -6046,7 +6050,7 @@ var author$project$Main$update = F2(
 						rooms);
 					return _Utils_Tuple2(
 						author$project$Main$Data(newRooms),
-						A2(author$project$Main$alartChat, newRoom.roomId, !newRoom.isChecked));
+						A3(author$project$Main$alartChat, newRoom.roomId, newRoom.name, !newRoom.isChecked));
 				} else {
 					return _Utils_Tuple2(author$project$Main$Loading, author$project$Main$getRooms);
 				}
@@ -6091,7 +6095,6 @@ var elm$html$Html$Attributes$boolProperty = F2(
 			elm$json$Json$Encode$bool(bool));
 	});
 var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
-var elm$json$Json$Encode$string = _Json_wrap;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
