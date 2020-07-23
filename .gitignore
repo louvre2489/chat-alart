@@ -6,6 +6,8 @@ tmp
 dump
 *.p12
 tags
+.DS_Store
+.bloop
 
 # SBT
 dist
@@ -29,6 +31,10 @@ RUNNING_PID
 .settings
 .cache-main
 .cache-tests
+
+# metals
+.metals
+project/metals.sbt
 
 # node.js
 # Compiled binary addons

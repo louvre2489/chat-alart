@@ -11,7 +11,7 @@ import org.apache.kafka.common.serialization.StringDeserializer
 
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future, Promise }
-import scala.sys.process.Process
+import scala.sys.process._
 import scala.util.{ Failure, Success }
 
 object Main extends App {
@@ -57,13 +57,13 @@ object Main extends App {
   private def business(key: String, value: String): Future[Done] = {
     // 音声ファイルの作成
     println(s"音声ファイルを作成:$value")
-    Process(s"echo $value | docker run -i --rm u6kapps/open_jtalk > chatalart.wav").run()
+    (("echo " + value) #| "docker run -i --rm u6kapps/open_jtalk > ~/chatalart.wav").!
     // 音声ファイルの再生
     println("音声ファイルを再生")
-    Process("aplay chatalart.wav").run()
+    ("aplay ~/chatalart.wav").!
     // 削除
     println("音声ファイルを削除")
-    Process("rm -f chatalart.wav").run()
+    ("rm -f ~/chatalart.wav").!
 
     if (value.toList == totalMessages.toString.getBytes.toList) lastMessage.success(Done)
     Future.successful(Done)
